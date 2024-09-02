@@ -7,7 +7,7 @@ import ProjectPage from './ProjectPage';
 import ChannelPage from './ChannelPage';
 import { useRouter } from 'next/navigation';
 import { db, ProfileProvider, useProfile } from '@/db';
-
+import ProfileAvatar from '@/components/ProfileAvatar';
 
 const Page = () => {
     const { isLoading, user, error } = db.useAuth();
@@ -56,20 +56,7 @@ const NavBar = () => {
                 {/* Add your navigation items here */}
             </div>
             <div className="mb-4">
-                {isLoading ? (
-                    <div className="w-8 h-8 rounded-full bg-gray-300 animate-pulse"></div>
-                ) : profile ? (
-                    <div 
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold"
-                        style={{ backgroundColor: profile.color || '#gray-300' }}
-                    >
-                        {profile.name ? profile.name.charAt(0).toUpperCase() : '?'}
-                    </div>
-                ) : (
-                    <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
-                        <span className="text-gray-500 text-xs">?</span>
-                    </div>
-                )}
+                <ProfileAvatar profile={profile} isLoading={isLoading} />
             </div>
         </nav>
     );
