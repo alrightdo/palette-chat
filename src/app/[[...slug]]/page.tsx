@@ -8,6 +8,7 @@ import ChannelPage from './ChannelPage';
 import { useRouter } from 'next/navigation';
 import { db, ProfileProvider, useProfile } from '@/db';
 import ProfileAvatar from '@/components/ProfileAvatar';
+import { tx } from '@instantdb/react';
 
 const Page = () => {
     const { isLoading, user, error } = db.useAuth();
@@ -49,6 +50,13 @@ const Page = () => {
 const NavBar = () => {
     const { profile, isLoading } = useProfile();
 
+    const handleAvatarClick = () => {
+        const newName = prompt("Please enter your name:");
+        if (newName) {
+            db.transact([tx.profile[profile.id].update({name: newName})])
+        }
+    };
+
     return (
         <nav className="w-10 h-screen bg-gray-100 flex-shrink-0 flex flex-col justify-between items-center">
             {/* Nav content */}
@@ -56,7 +64,11 @@ const NavBar = () => {
                 {/* Add your navigation items here */}
             </div>
             <div className="mb-4">
-                <ProfileAvatar profile={profile} isLoading={isLoading} />
+                <ProfileAvatar 
+                    profile={profile} 
+                    isLoading={isLoading} 
+                    onClick={handleAvatarClick}
+                />
             </div>
         </nav>
     );

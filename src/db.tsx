@@ -33,10 +33,13 @@ const ProfileContext = createContext<{ profile: any | null, isLoading: boolean }
 // Create a ProfileProvider component
 export const ProfileProvider = ({ children }: { children: React.ReactNode }) => {
     const { user } = db.useAuth();
-    const { isLoading, error, data } = db.useQuery({ profile: { $: { where: { user_id: user?.id || "never" } } } });
+    const { isLoading, error, data } = db.useQuery(user ? { profile: { $: { where: { user_id: user.id } } } } : null);
 
     useEffect(() => {
-        if (isLoading || !user || (data?.profile && data.profile[0])) return;
+        if (isLoading) return;
+        if (!user) return;
+        if (error) return;
+        if (data.profile[0]) return;
 
         const pastelColors = [
             "#FFB3BA", // Light Pink
