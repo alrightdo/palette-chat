@@ -11,62 +11,45 @@ const Page = () => {
   const slug = params.slug as string[] | undefined;
 
   let content;
-  if (!slug || slug.length === 0) {
+  if (!slug || slug.length === 0 || (slug.length === 1 && slug[0] === 'home')) {
     content = <HomePage />;
-  } else if (slug.length === 1) {
-    content = <ProjectPage projectId={slug[0]} />;
-  } else if (slug.length === 2) {
+  } else if (slug.length === 2 && slug[0] === 'p') {
+    content = <ProjectPage projectId={slug[1]} />;
+  } else if (slug.length === 2 && slug[0] === 'c') {
     content = <ChannelPage channelId={slug[1]} />;
+  } else {
+    // Handle 404 or redirect to home
+    content = <HomePage />;
   }
 
   return (
-    <div style={styles.container}>
+    <div className="flex h-screen">
       <NavBar />
-      <div style={styles.mainContent}>
+      <div className="flex flex-1">
         <SideBar />
-        <div style={styles.rightContent}>
+        <div className="flex flex-col flex-1">
           <AppBar />
-          <main style={styles.content}>{content}</main>
+          <main className="flex-1 min-h-0 p-0">{content}</main>
         </div>
       </div>
     </div>
   );
 };
 
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    display: 'flex',
-    height: '100vh',
-  },
-  mainContent: {
-    display: 'flex',
-    flex: 1,
-  },
-  rightContent: {
-    display: 'flex',
-    flexDirection: 'column',
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-    padding: '20px',
-  },
-};
-
 const NavBar = () => (
-  <nav style={{ width: '40px', height: '100vh', backgroundColor: '#f0f0f0', flexShrink: 0 }}>
+  <nav className="w-10 h-screen bg-gray-100 flex-shrink-0">
     {/* Nav content */}
   </nav>
 );
 
 const SideBar = () => (
-  <aside style={{ width: '240px', height: '100vh', backgroundColor: '#e0e0e0', flexShrink: 0 }}>
+  <aside className="w-[240px] h-screen bg-gray-200 flex-shrink-0">
     {/* Sidebar content */}
   </aside>
 );
 
 const AppBar = () => (
-  <header style={{ height: '40px', width: '100%', backgroundColor: '#d0d0d0', flexShrink: 0 }}>
+  <header className="h-10 w-full bg-gray-300 flex-shrink-0">
     {/* App bar content */}
   </header>
 );

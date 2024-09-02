@@ -6,7 +6,7 @@ const HomePage = () => {
     const slug = params.slug as string[] || [];
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+        <div className="flex flex-col items-center justify-center h-full bg-gray-100">
             <h1 className="text-4xl font-bold mb-4">Welcome to Palette Chat!</h1>
             <p className="text-lg mb-6">We're glad to have you here. Explore and enjoy your stay! 🎨</p>
             <p className="text-md mb-4">Current path: /{slug.join('/')}</p>
