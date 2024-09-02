@@ -9,7 +9,25 @@ import ChannelPage from './ChannelPage';
 import { useRouter } from 'next/navigation';
 
 const APP_ID = 'b624ebb3-5c3d-4416-87f2-24005d41aeb5';
-const db = init({ appId: APP_ID });
+type Schema = {
+    "channel": {
+        "name": string,
+    },
+    "post": {
+        "file_id": string,
+        "message": string,
+        "created_at": string,
+        "mux_id": string,
+    },
+    "project": {
+        "name": string,
+    },
+    "user": {
+        "name": string,
+    },
+}
+
+const db = init<Schema>({ appId: APP_ID });
 
 const Page = () => {
   const { isLoading, user, error } = db.useAuth();
