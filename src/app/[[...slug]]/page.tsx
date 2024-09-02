@@ -46,11 +46,34 @@ const Page = () => {
     );
 };
 
-const NavBar = () => (
-    <nav className="w-10 h-screen bg-gray-100 flex-shrink-0">
-        {/* Nav content */}
-    </nav>
-);
+const NavBar = () => {
+    const { profile, isLoading } = useProfile();
+
+    return (
+        <nav className="w-10 h-screen bg-gray-100 flex-shrink-0 flex flex-col justify-between items-center">
+            {/* Nav content */}
+            <div className="flex-grow">
+                {/* Add your navigation items here */}
+            </div>
+            <div className="mb-4">
+                {isLoading ? (
+                    <div className="w-8 h-8 rounded-full bg-gray-300 animate-pulse"></div>
+                ) : profile ? (
+                    <div 
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold"
+                        style={{ backgroundColor: profile.color || '#gray-300' }}
+                    >
+                        {profile.name ? profile.name.charAt(0).toUpperCase() : '?'}
+                    </div>
+                ) : (
+                    <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+                        <span className="text-gray-500 text-xs">?</span>
+                    </div>
+                )}
+            </div>
+        </nav>
+    );
+};
 
 const SideBar = () => (
     <aside className="w-[240px] h-screen bg-gray-200 flex-shrink-0">
