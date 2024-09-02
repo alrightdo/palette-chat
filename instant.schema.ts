@@ -12,15 +12,18 @@ const graph = i.graph(
       "name": i.string(),
     }),
     "post": i.entity({
+      "created_at": i.number(),
       "file_id": i.string(),
-      "created_at": i.string(),
       "message": i.string(),
       "mux_id": i.string(),
     }),
-    "project": i.entity({
+    "profile": i.entity({
+      "color": i.string(),
+      "email": i.string(),
       "name": i.string(),
+      "user_id": i.string(),
     }),
-    "user": i.entity({
+    "project": i.entity({
       "name": i.string(),
     }),
   },
@@ -47,30 +50,6 @@ const graph = i.graph(
         "on": "channel",
         "has": "one",
         "label": "project"
-      }
-    },
-    "projectUsers": {
-      "forward": {
-        "on": "project",
-        "has": "many",
-        "label": "users"
-      },
-      "reverse": {
-        "on": "user",
-        "has": "many",
-        "label": "projects"
-      }
-    },
-    "userPosts": {
-      "forward": {
-        "on": "user",
-        "has": "many",
-        "label": "posts"
-      },
-      "reverse": {
-        "on": "post",
-        "has": "one",
-        "label": "author"
       }
     }
   }

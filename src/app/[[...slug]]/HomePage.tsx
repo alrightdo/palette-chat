@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'next/navigation';
+import { useProfile } from '@/db';
 
 const HomePage = () => {
     const params = useParams();
