@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { db, ProfileProvider, useProfile } from '@/db';
 import ProfileAvatar from '@/components/ProfileAvatar';
 import { id, tx } from '@instantdb/react';
+import Link from 'next/link';
 
 const Page = () => {
     const { isLoading, user, error } = db.useAuth();
@@ -16,7 +17,10 @@ const Page = () => {
     const params = useParams();
     const slug = params.slug as string[] | undefined;
 
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) { 
+        console.log('isLoading!')
+        return <div>Loading...</div>;
+    }
     if (error) return <div>Uh oh! {error.message}</div>;
     if (!user) return <Login />;
 
@@ -91,9 +95,9 @@ const NavBar = () => {
                     <ul className="mb-4">
                         {data?.project.map((project) => (
                             <li key={project.id} className="mb-2">
-                                <a href={`/p/${project.id}`} className="text-blue-600 hover:underline">
+                                <Link href={`/p/${project.id}`} className="text-blue-600 hover:underline">
                                     {project.name}
-                                </a>
+                                </Link>
                             </li>
                         ))}
                     </ul>
