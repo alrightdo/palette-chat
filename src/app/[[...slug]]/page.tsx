@@ -51,8 +51,8 @@ const NavBar = () => {
     const { profile, isLoading } = useProfile();
 
     const handleAvatarClick = () => {
-        const newName = prompt("Please enter your name:");
-        if (newName) {
+        const newName = prompt("Please enter your name:", profile.name);
+        if (newName && newName !== profile.name) {
             db.transact([tx.profile[profile.id].update({name: newName})])
         }
     };
