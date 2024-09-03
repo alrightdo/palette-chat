@@ -8,7 +8,7 @@ import ChannelPage from './ChannelPage';
 import { useRouter } from 'next/navigation';
 import { db, ProfileProvider, useProfile } from '@/db';
 import ProfileAvatar from '@/components/ProfileAvatar';
-import { tx } from '@instantdb/react';
+import { id, tx } from '@instantdb/react';
 
 const Page = () => {
     const { isLoading, user, error } = db.useAuth();
@@ -66,6 +66,21 @@ const NavBar = () => {
         }
     };
 
+    const handleCreateProject = () => {
+        if (!profile) return;
+        const projectName = prompt('Enter your project name:');
+        if (projectName) {
+            const projectId = id();
+            db.transact([
+                tx.project[projectId].update({
+                    name: projectName,
+                    created_at: new Date().getTime()
+                }),
+                tx.project[projectId].link({profile: profile.id})
+            ]);
+        }
+    };
+
     return (
         <nav className="w-60 h-screen bg-gray-100 flex-shrink-0 flex flex-col justify-between items-center p-4">
             <div className="flex-grow w-full overflow-y-auto">
@@ -73,7 +88,7 @@ const NavBar = () => {
                 {projectsLoading ? (
                     <p>Loading projects...</p>
                 ) : (
-                    <ul>
+                    <ul className="mb-4">
                         {data?.project.map((project) => (
                             <li key={project.id} className="mb-2">
                                 <a href={`/p/${project.id}`} className="text-blue-600 hover:underline">
@@ -83,6 +98,12 @@ const NavBar = () => {
                         ))}
                     </ul>
                 )}
+                <button 
+                    className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+                    onClick={handleCreateProject}
+                >
+                    Add Project
+                </button>
             </div>
             <div className="mb-4">
                 <ProfileAvatar 
@@ -95,11 +116,63 @@ const NavBar = () => {
     );
 };
 
-const SideBar = () => (
-    <aside className="w-[240px] h-screen bg-gray-200 flex-shrink-0">
-        {/* Sidebar content */}
-    </aside>
-);
+const SideBar = () => {
+    const params = useParams();
+    const router = useRouter();
+    const projectId = params.slug?.[1];
+    const { profile } = useProfile();
+
+    const { data, isLoading } = db.useQuery(projectId ? {
+        channel: {
+            $: {
+                where: {
+                    "project.id": projectId
+                }
+            },
+        },
+    } : null);
+
+    const handleCreateChannel = () => {
+        if (!profile || !projectId) return;
+        const channelName = prompt('Enter your channel name:');
+        if (channelName) {
+            const channelId = id();
+            db.transact([
+                tx.channel[channelId].update({
+                    name: channelName,
+                }),
+                tx.channel[channelId].link({project: projectId})
+            ]).then(() => {
+                router.push(`/c/${channelId}`);
+            });
+        }
+    };
+
+    return (
+        <aside className="w-60 h-screen bg-gray-200 flex-shrink-0 flex flex-col p-4">
+            <h2 className="text-lg font-semibold mb-2">Channels</h2>
+            {isLoading ? (
+                <p>Loading channels...</p>
+            ) : (
+                <ul className="mb-4 flex-grow overflow-y-auto">
+                    {data?.channel.map((channel) => (
+                        <li key={channel.id} className="mb-2">
+                            <a href={`/c/${channel.id}`} className="text-blue-600 hover:underline">
+                                {channel.name}
+                            </a>
+                        </li>
+                    ))}
+                </ul>
+            )}
+            <button 
+                className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+                onClick={handleCreateChannel}
+            >
+                Add Channel
+            </button>
+        </aside>
+    );
+};
 
 const AppBar = () => {
     const { profile, isLoading } = useProfile();
