@@ -48,7 +48,16 @@ const Page = () => {
 };
 
 const NavBar = () => {
-    const { profile, isLoading } = useProfile();
+    const { profile, isLoading: profileLoading } = useProfile();
+    const { data, isLoading: projectsLoading } = db.useQuery(profile ? {
+        project: {
+            $: {
+                where: {
+                    "profile.id": profile.id
+                }
+            },
+        },
+    } : null );
 
     const handleAvatarClick = () => {
         const newName = prompt("Please enter your name:", profile.name);
@@ -58,15 +67,27 @@ const NavBar = () => {
     };
 
     return (
-        <nav className="w-10 h-screen bg-gray-100 flex-shrink-0 flex flex-col justify-between items-center">
-            {/* Nav content */}
-            <div className="flex-grow">
-                {/* Add your navigation items here */}
+        <nav className="w-60 h-screen bg-gray-100 flex-shrink-0 flex flex-col justify-between items-center p-4">
+            <div className="flex-grow w-full overflow-y-auto">
+                <h2 className="text-lg font-semibold mb-2">Your Projects</h2>
+                {projectsLoading ? (
+                    <p>Loading projects...</p>
+                ) : (
+                    <ul>
+                        {data?.project.map((project) => (
+                            <li key={project.id} className="mb-2">
+                                <a href={`/p/${project.id}`} className="text-blue-600 hover:underline">
+                                    {project.name}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                )}
             </div>
             <div className="mb-4">
                 <ProfileAvatar 
                     profile={profile} 
-                    isLoading={isLoading} 
+                    isLoading={profileLoading} 
                     onClick={handleAvatarClick}
                 />
             </div>
